@@ -1,5 +1,9 @@
 const router = require("express").Router();
 const { Show } = require("../models");
+const {
+  handleNotFoundError,
+  handleInternalServerError,
+} = require("../middleware/error");
 
 //! Get All Shows
 router.get("/shows", async (req, res) => {
@@ -13,14 +17,29 @@ router.post("/shows", async (req, res) => {
 });
 
 //!Get Show by name
-router.get("/shows/:name", async (req, res) => {
-  const show = await Show.findOne({ where: { name: req.params.name } });
-  if (show) {
-    res.status(200).json(show);
-  } else {
-    res.status(404).json(null);
+
+router.get("/shows/:name", async (req, res, next) => {
+  try {
+    const show = await Show.findOne({ where: { name: req.params.name } });
+    if (show) {
+      res.status(200).json(show);
+    } else {
+      req.errType = 400;
+      throw new Error("Show doesnt exist");
+    }
+  } catch (error) {
+    next(error);
   }
 });
+
+// router.get("/shows/:name", async (req, res) => {
+//   const show = await Show.findOne({ where: { name: req.params.name } });
+//   if (show) {
+//     res.status(200).json(show);
+//   } else {
+//     res.status(404).json(null);
+//   }
+// });
 
 //! Delete all Shows
 router.delete("/shows", async (req, res) => {
@@ -56,5 +75,8 @@ router.put("/shows/:name", async (req, res) => {
   await result.save();
   res.status(200).json({ msg: `Updated: ${req.params.name}`, result });
 });
+
+router.use(handleNotFoundError);
+router.use(handleInternalServerError);
 
 module.exports = router;

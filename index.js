@@ -3,6 +3,8 @@ const express = require("express");
 const connection = require("./connection");
 const app = express();
 const { Movie, Show, Genre } = require("./models/index");
+
+//! Router Connections
 const {
   movieRouter,
   showRouter,
