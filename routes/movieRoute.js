@@ -1,23 +1,26 @@
 const router = require("express").Router();
-const { Movie } = require("../models");
+const { Movie, Genre } = require("../models");
 const {
   handleNotFoundError,
   handleInternalServerError,
 } = require("../middleware/error");
 
 //! Get all movies
-router.get("/movies", async (req, res) => {
+router.get("/", async (req, res) => {
   res.status(200).json(await Movie.findAll({}));
 });
 
 //!Create a Movie
-router.post("/movies", async (req, res) => {
+router.post("/", async (req, res) => {
+  // const genre = await Genre.findOne({ where: { name: req.body.name } });
   const movie = await Movie.create(req.body);
+  // genre.addMovies([movie]);
+  // movie.addGenres([genre]);
   res.status(201).json({ msg: `Created ${movie.name}`, movie });
 });
 
 //!Get a movie by name
-router.get("/movies/:name", async (req, res, next) => {
+router.get("/:name", async (req, res, next) => {
   try {
     const movie = await Movie.findOne({ where: { name: req.params.name } });
     if (movie) {
@@ -32,19 +35,19 @@ router.get("/movies/:name", async (req, res, next) => {
 });
 
 //! Delete all Movies
-router.delete("/movies", async (req, res) => {
+router.delete("/", async (req, res) => {
   const result = await Movie.destroy({ where: {} });
   res.status(200).json({ msg: "Deleted all Movies", result });
 });
 
 //!Delete Movie by name
-router.delete("/movies/:name", async (req, res) => {
+router.delete("/:name", async (req, res) => {
   const result = await Movie.destroy({ where: { name: req.params.name } });
   res.status(200).json({ msg: `Deleted ${req.params.name}` });
 });
 
 //!Update Movie
-router.put("/movies/:name", async (req, res) => {
+router.put("/:name", async (req, res) => {
   const result = await Movie.findOne({ where: { name: req.params.name } });
   if (req.body.name) {
     result.name = req.body.name;
