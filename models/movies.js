@@ -12,6 +12,10 @@ const Movie = connection.define(
     rating: { type: INTEGER },
     releaseYear: { type: INTEGER },
     actor: { type: DataTypes.STRING },
+    genre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     indexes: [{ unique: false, fields: ["name"] }],

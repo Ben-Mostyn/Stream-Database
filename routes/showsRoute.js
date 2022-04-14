@@ -6,19 +6,19 @@ const {
 } = require("../middleware/error");
 
 //! Get All Shows
-router.get("/shows", async (req, res) => {
+router.get("/", async (req, res) => {
   res.status(200).json(await Show.findAll({}));
 });
 
 //!Create Show
-router.post("/shows", async (req, res) => {
+router.post("/", async (req, res) => {
   const show = await Show.create(req.body);
   res.status(201).json({ msg: `Created ${show.name}`, show });
 });
 
 //!Get Show by name
 
-router.get("/shows/:name", async (req, res, next) => {
+router.get("/:name", async (req, res, next) => {
   try {
     const show = await Show.findOne({ where: { name: req.params.name } });
     if (show) {
@@ -42,19 +42,19 @@ router.get("/shows/:name", async (req, res, next) => {
 // });
 
 //! Delete all Shows
-router.delete("/shows", async (req, res) => {
+router.delete("/", async (req, res) => {
   const result = await Show.destroy({ where: {} });
   res.status(200).json({ msg: "Deleted all Shows", result });
 });
 
 //!Delete Show by name
-router.delete("/shows/:name", async (req, res) => {
+router.delete("/:name", async (req, res) => {
   const result = await Show.destroy({ where: { name: req.params.name } });
   res.status(200).json({ msg: `Deleted ${req.params.name}` });
 });
 
 //!Update Show
-router.put("/shows/:name", async (req, res) => {
+router.put("/:name", async (req, res) => {
   const result = await Show.findOne({ where: { name: req.params.name } });
   if (req.body.name) {
     result.name = req.body.name;
