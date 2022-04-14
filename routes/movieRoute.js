@@ -12,11 +12,13 @@ router.get("/", async (req, res) => {
 
 //!Create a Movie
 router.post("/", async (req, res) => {
-  // const genre = await Genre.findOne({ where: { name: req.body.name } });
+  const genre = await Genre.findOne({
+    where: { name: (req.body.name = req.body.genre) },
+  });
   const movie = await Movie.create(req.body);
-  // genre.addMovies([movie]);
-  // movie.addGenres([genre]);
   res.status(201).json({ msg: `Created ${movie.name}`, movie });
+  movie.addGenres([genre]);
+  genre.addMovies([movie]);
 });
 
 //!Get a movie by name

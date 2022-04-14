@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Show } = require("../models");
+const { Show, Genre } = require("../models");
 const {
   handleNotFoundError,
   handleInternalServerError,
@@ -12,8 +12,16 @@ router.get("/", async (req, res) => {
 
 //!Create Show
 router.post("/", async (req, res) => {
+  const genre = await Genre.findOne({
+    where: { name: (req.body.name = req.body.genre) },
+  });
   const show = await Show.create(req.body);
   res.status(201).json({ msg: `Created ${show.name}`, show });
+  show.addGenres([genre]);
+  genre.addShows([show]);
+
+  // const show = await Show.create(req.body);
+  // res.status(201).json({ msg: `Created ${show.name}`, show });
 });
 
 //!Get Show by name

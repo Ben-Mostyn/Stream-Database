@@ -13,6 +13,7 @@ const Show = connection.define(
     actor: { type: DataTypes.STRING },
     seasons: { type: INTEGER },
     episodes: { type: INTEGER },
+    genre: { type: DataTypes.STRING },
   },
   {
     indexes: [{ unique: false, fields: ["name"] }],
