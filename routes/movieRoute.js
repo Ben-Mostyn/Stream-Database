@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
 //!Create a Movie
 router.post("/", async (req, res) => {
   const genre = await Genre.findOne({
-    where: { name: (req.body.name = req.body.genre) },
+    where: { name: req.body.genre },
   });
   const movie = await Movie.create(req.body);
   res.status(201).json({ msg: `Created ${movie.name}`, movie });
@@ -30,6 +30,21 @@ router.get("/:name", async (req, res, next) => {
     } else {
       req.errType = 400;
       throw new Error("Doesnt exist");
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+//!Get a movie by Genre
+router.get("/:genre", async (req, res, next) => {
+  try {
+    const movie = await Movie.findAll({ where: { genre: req.params.genre } });
+    if (movie) {
+      res.status(200).json(movie);
+    } else {
+      req.errType = 400;
+      throw new Error("Doesn't exist");
     }
   } catch (error) {
     next(error);
